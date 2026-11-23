@@ -3,41 +3,162 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DUCE Venues & Timetable</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#2456d6">
+<meta name="theme-color" content="#1B202E">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --bg:#f5f6f8;--card:#ffffff;--tx:#191c21;--mu:#68707d;--bd:#d9dfe7;--bd-light:#edf1f5;
-  --free:#13864a;--freebg:#e6f6ee;--free-bd:#b1e7cb;
-  --busy:#c53026;--busybg:#fdeeed;--busy-bd:#f7c1be;
-  --acc:#2456d6;--acc-bg:#edf2ff;--acc-bd:#b8ccff;
+  --bg:#f4f5f8;--card:#ffffff;--tx:#171a1f;--mu:#646d7a;--bd:#d7dde6;--bd-light:#eef2f6;
+  --free:#118347;--freebg:#e5f7ed;--free-bd:#aee8c8;
+  --busy:#c42e24;--busybg:#fdeeed;--busy-bd:#f6bebb;
+  --acc:#2456d6;--acc-bg:#ecf2ff;--acc-bd:#b7ccff;
   --shadow:0 8px 24px rgba(18,28,45,0.08);
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#121417;--card:#1a1d22;--tx:#eaedf1;--mu:#96a0ae;--bd:#2b313a;--bd-light:#22272f;
-    --free:#48d58a;--freebg:#132d20;--free-bd:#1d4e36;
-    --busy:#ff7d70;--busybg:#351b18;--busy-bd:#5a2822;
+    --bg:#0f1115;--card:#181b20;--tx:#eaedf1;--mu:#949fad;--bd:#272d36;--bd-light:#1f232b;
+    --free:#44d487;--freebg:#122c1f;--free-bd:#1b4c34;
+    --busy:#ff7a6d;--busybg:#341a17;--busy-bd:#572620;
     --acc:#7aa5ff;--acc-bg:#162447;--acc-bd:#294680;
-    --shadow:0 12px 30px rgba(0,0,0,0.45)
+    --shadow:0 12px 32px rgba(0,0,0,0.5)
   }
 }
 :root[data-theme="dark"]{
-  --bg:#121417;--card:#1a1d22;--tx:#eaedf1;--mu:#96a0ae;--bd:#2b313a;--bd-light:#22272f;
-  --free:#48d58a;--freebg:#132d20;--free-bd:#1d4e36;
-  --busy:#ff7d70;--busybg:#351b18;--busy-bd:#5a2822;
+  --bg:#0f1115;--card:#181b20;--tx:#eaedf1;--mu:#949fad;--bd:#272d36;--bd-light:#1f232b;
+  --free:#44d487;--freebg:#122c1f;--free-bd:#1b4c34;
+  --busy:#ff7a6d;--busybg:#341a17;--busy-bd:#572620;
   --acc:#7aa5ff;--acc-bg:#162447;--acc-bd:#294680;
-  --shadow:0 12px 30px rgba(0,0,0,0.45)
+  --shadow:0 12px 32px rgba(0,0,0,0.5)
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px;max-width:680px;margin-left:auto;margin-right:auto}
-h1{font-size:19px;font-weight:750;margin:0 0 4px;letter-spacing:-0.2px}
-.sub{color:var(--mu);font-size:12.5px;line-height:1.45;margin-bottom:14px}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:12px;max-width:680px;margin-left:auto;margin-right:auto}
 
-/* Search bar */
+/* Ambient Background Cover */
+.bg-ambience{
+  position:fixed;
+  top:0;left:0;right:0;height:320px;
+  background:url('cover.jpg') center top / cover no-repeat;
+  opacity:0.10;
+  filter:blur(45px);
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* TikTok-style Cover Hero */
+.cover-hero{
+  position:relative;
+  width:100%;
+  min-height:170px;
+  border-radius:20px;
+  overflow:hidden;
+  margin-bottom:12px;
+  box-shadow:var(--shadow);
+  background:#1B202E;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+.cover-img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 35%;
+  display:block;
+}
+.cover-gradient{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(15,17,23,0.15) 0%, rgba(15,17,23,0.45) 45%, rgba(15,17,23,0.88) 100%);
+}
+.cover-body{
+  position:relative;
+  padding:14px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.cover-profile{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.cover-avatar{
+  width:58px;
+  height:58px;
+  border-radius:16px;
+  border:2.5px solid #ffffff;
+  box-shadow:0 4px 14px rgba(0,0,0,0.4);
+  background:#2456d6;
+  flex:none;
+}
+.cover-title{
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-0.3px;
+  color:#ffffff;
+  line-height:1.2;
+  text-shadow:0 2px 6px rgba(0,0,0,0.5);
+}
+.cover-tag{
+  display:inline-block;
+  font-size:11px;
+  font-weight:600;
+  padding:2px 8px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.22);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  margin-top:4px;
+  color:#f4f7ff;
+  border:1px solid rgba(255,255,255,0.32);
+}
+
+/* Nav Switcher */
+.cover-nav{
+  display:flex;
+  gap:4px;
+  background:rgba(255,255,255,0.20);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  padding:4px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.28);
+}
+.nav-btn{
+  font:inherit;
+  font-size:12.5px;
+  font-weight:700;
+  padding:6px 14px;
+  border-radius:9px;
+  border:none;
+  background:transparent;
+  color:#ffffff;
+  cursor:pointer;
+  transition:all .18s ease;
+  white-space:nowrap;
+}
+.nav-btn:active{opacity:0.85}
+.nav-btn.active{
+  background:#ffffff;
+  color:#11141a;
+  box-shadow:0 3px 10px rgba(0,0,0,0.25);
+}
+
+.notice-bar{
+  color:var(--mu);
+  font-size:12px;
+  line-height:1.45;
+  margin-bottom:12px;
+  padding:0 2px;
+}
+
+/* Course Search */
 .search-wrap{position:relative;margin-bottom:12px}
 .search-box{position:relative;display:flex;align-items:center}
 .search-input{width:100%;font:inherit;font-size:14px;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 36px 10px 36px;box-shadow:0 2px 6px rgba(0,0,0,0.03)}
@@ -46,7 +167,7 @@ h1{font-size:19px;font-weight:750;margin:0 0 4px;letter-spacing:-0.2px}
 .search-clear{position:absolute;right:10px;background:none;border:none;color:var(--mu);font-size:16px;cursor:pointer;padding:4px 8px}
 
 .search-chips{display:flex;gap:6px;margin-top:8px;overflow-x:auto;padding-bottom:2px}
-.chip{font:inherit;font-size:12px;font-weight:550;padding:5px 11px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--mu);cursor:pointer;white-space:nowrap}
+.chip{font:inherit;font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--mu);cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 
 .search-panel{margin-top:8px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px;box-shadow:var(--shadow);max-height:360px;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -62,9 +183,9 @@ h1{font-size:19px;font-weight:750;margin:0 0 4px;letter-spacing:-0.2px}
 .badge-other{background:var(--bg);color:var(--mu);border:1px solid var(--bd)}
 .sc-details{font-size:13px;color:var(--mu);display:flex;gap:12px;flex-wrap:wrap}
 
-/* Days row */
+/* Days Row */
 .days{display:flex;gap:6px;margin-bottom:10px}
-.days button{flex:1;font:inherit;font-size:13px;font-weight:600;padding:8px 0;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
+.days button{flex:1;font:inherit;font-size:13px;font-weight:650;padding:8px 0;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
 .days button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 
 /* Compact Dropdowns */
@@ -72,7 +193,7 @@ h1{font-size:19px;font-weight:750;margin:0 0 4px;letter-spacing:-0.2px}
 .dd-wrap{position:relative;flex:1;min-width:0}
 .dd-btn{width:100%;font:inherit;font-size:14px;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:11px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.03)}
 .dd-btn:active{background:var(--bg)}
-.dd-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:550}
+.dd-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .dd-arr{color:var(--mu);font-size:11px;flex:none}
 
 .dd-panel{position:absolute;top:calc(100% + 5px);left:0;right:0;max-height:220px;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:var(--shadow);z-index:100;display:flex;flex-direction:column;overflow:hidden}
@@ -84,69 +205,170 @@ h1{font-size:19px;font-weight:750;margin:0 0 4px;letter-spacing:-0.2px}
 .dd-item:hover,.dd-item:active{background:var(--bg)}
 .dd-item.sel{font-weight:700;color:var(--acc);background:var(--acc-bg)}
 
-/* Cards & Info */
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.02)}
+/* Cards */
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
 .stat{font-size:20px;font-weight:750;margin-bottom:2px;letter-spacing:-0.2px}
 .free{color:var(--free)}.busy{color:var(--busy)}
 .mu{color:var(--mu);font-size:13px}
 .slot{display:flex;gap:10px;align-items:center;padding:7px 10px;border-radius:9px;margin-top:5px;font-size:13.5px}
 .slot.f{background:var(--freebg);color:var(--free)}.slot.b{background:var(--busybg);color:var(--tx)}
 .slot.now{outline:2px solid var(--acc);outline-offset:1px}
-.t{width:95px;font-variant-numeric:tabular-nums;color:var(--mu);flex:none;font-weight:550}
-.pill{display:inline-block;margin:3px 4px 0 0;padding:5px 11px;border-radius:99px;background:var(--freebg);color:var(--free);font-size:12.5px;font-weight:600;border:1px solid var(--free-bd);cursor:pointer}
+.t{width:95px;font-variant-numeric:tabular-nums;color:var(--mu);flex:none;font-weight:600}
+.pill{display:inline-block;margin:3px 4px 0 0;padding:5px 12px;border-radius:99px;background:var(--freebg);color:var(--free);font-size:12.5px;font-weight:600;border:1px solid var(--free-bd);cursor:pointer}
 .pill:active{opacity:.6}
+
+/* About Page Styling */
+.about-card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.about-h2{font-size:16px;font-weight:750;margin:0 0 8px;display:flex;align-items:center;gap:8px;color:var(--tx)}
+.about-p{font-size:13.5px;line-height:1.55;color:var(--tx);margin:0 0 10px}
+.about-p:last-child{margin-bottom:0}
+.about-list{margin:8px 0;padding-left:20px;font-size:13.5px;line-height:1.55;color:var(--tx)}
+.about-list li{margin-bottom:6px}
+.about-list li:last-child{margin-bottom:0}
+.about-tag{display:inline-block;background:var(--acc-bg);color:var(--acc);border:1px solid var(--acc-bd);font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:6px;margin-right:6px}
+.about-btn-back{width:100%;font:inherit;font-size:14px;font-weight:700;padding:12px;border-radius:12px;border:none;background:var(--acc);color:#ffffff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px}
+.about-btn-back:active{opacity:0.85}
 </style></head><body>
 
-<h1>DUCE Venue Status</h1>
-<div class="sub">Referenced from the official DUCE university teaching timetable. Note: real-time updates such as aborted classes, room suspensions, or ad-hoc bookings are not reflected.</div>
+<div class="bg-ambience"></div>
 
-<!-- Course Search Section -->
-<div class="search-wrap">
-  <div class="search-box">
-    <span class="search-icon">🔍</span>
-    <input type="search" class="search-input" id="course-search" placeholder="Search course status (e.g. CS151, MT274, IS158)..." autocomplete="off">
-    <button class="search-clear" id="search-clear" style="display:none" title="Clear search">&times;</button>
-  </div>
-  <div class="search-chips" id="search-chips" style="display:none">
-    <button class="chip on" data-filter="all">All Sessions</button>
-    <button class="chip" data-filter="now">Happening Now</button>
-    <button class="chip" data-filter="today">Today</button>
-  </div>
-  <div id="search-results" class="search-panel" style="display:none"></div>
-</div>
-
-<div class="days" id="days"></div>
-
-<!-- Compact Scrollable Dropdown Row -->
-<div class="row">
-  <div class="dd-wrap" id="venue-dd">
-    <button type="button" class="dd-btn" id="venue-btn">
-      <span class="dd-text" id="venue-label">Venue</span>
-      <span class="dd-arr">&#9662;</span>
-    </button>
-    <div class="dd-panel" id="venue-panel" style="display:none">
-      <input type="text" class="dd-filter" id="venue-filter" placeholder="Filter venues..." autocomplete="off">
-      <div class="dd-list" id="venue-list"></div>
+<!-- Cover Hero (TikTok-style) -->
+<div class="cover-hero">
+  <img class="cover-img" src="cover.jpg" alt="DUCE Cover">
+  <div class="cover-gradient"></div>
+  <div class="cover-body">
+    <div class="cover-profile">
+      <img src="icon-192.png" class="cover-avatar" alt="App Icon">
+      <div>
+        <div class="cover-title">DUCE Venues</div>
+        <div class="cover-tag">Semester 1 &bull; 2026/2027</div>
+      </div>
     </div>
-  </div>
-
-  <div class="dd-wrap" id="hour-dd">
-    <button type="button" class="dd-btn" id="hour-btn">
-      <span class="dd-text" id="hour-label">Hour</span>
-      <span class="dd-arr">&#9662;</span>
-    </button>
-    <div class="dd-panel" id="hour-panel" style="display:none">
-      <div class="dd-list" id="hour-list"></div>
+    <div class="cover-nav">
+      <button type="button" class="nav-btn active" id="tab-venues">🏛️ Venues</button>
+      <button type="button" class="nav-btn" id="tab-about">ℹ️ About</button>
     </div>
   </div>
 </div>
 
-<div class="card" id="main"></div>
+<div class="notice-bar">
+  Referenced from the official DUCE university teaching timetable. Note: real-time updates such as aborted classes, suspensions, or ad-hoc bookings are not reflected.
+</div>
 
-<div class="card">
-  <div class="stat" style="font-size:15px">Free at this hour</div>
-  <div class="mu" id="fl-sub" style="margin-bottom:8px"></div>
-  <div id="freelist"></div>
+<!-- ==================== VENUES VIEW ==================== -->
+<div id="venues-view">
+  <!-- Course Search Section -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="search" class="search-input" id="course-search" placeholder="Search course status (e.g. CS151, MT274, IS158)..." autocomplete="off">
+      <button class="search-clear" id="search-clear" style="display:none" title="Clear search">&times;</button>
+    </div>
+    <div class="search-chips" id="search-chips" style="display:none">
+      <button class="chip on" data-filter="all">All Sessions</button>
+      <button class="chip" data-filter="now">Happening Now</button>
+      <button class="chip" data-filter="today">Today</button>
+    </div>
+    <div id="search-results" class="search-panel" style="display:none"></div>
+  </div>
+
+  <div class="days" id="days"></div>
+
+  <!-- Compact Scrollable Dropdown Row -->
+  <div class="row">
+    <div class="dd-wrap" id="venue-dd">
+      <button type="button" class="dd-btn" id="venue-btn">
+        <span class="dd-text" id="venue-label">Venue</span>
+        <span class="dd-arr">&#9662;</span>
+      </button>
+      <div class="dd-panel" id="venue-panel" style="display:none">
+        <input type="text" class="dd-filter" id="venue-filter" placeholder="Filter venues..." autocomplete="off">
+        <div class="dd-list" id="venue-list"></div>
+      </div>
+    </div>
+
+    <div class="dd-wrap" id="hour-dd">
+      <button type="button" class="dd-btn" id="hour-btn">
+        <span class="dd-text" id="hour-label">Hour</span>
+        <span class="dd-arr">&#9662;</span>
+      </button>
+      <div class="dd-panel" id="hour-panel" style="display:none">
+        <div class="dd-list" id="hour-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="main"></div>
+
+  <div class="card">
+    <div class="stat" style="font-size:15px">Free at this hour</div>
+    <div class="mu" id="fl-sub" style="margin-bottom:8px"></div>
+    <div id="freelist"></div>
+  </div>
+</div>
+
+<!-- ==================== ABOUT VIEW ==================== -->
+<div id="about-view" style="display:none">
+  <div class="about-card">
+    <div class="about-h2">🎯 Purpose of the App</div>
+    <p class="about-p">
+      <strong>DUCE Venue Status</strong> was created to solve a daily campus hurdle at the <strong>Dar es Salaam University College of Education (DUCE)</strong>: finding unoccupied lecture rooms, verifying class venues, and eliminating scheduling confusion.
+    </p>
+    <p class="about-p">
+      With over 25 lecture halls, science laboratories, computing facilities, and seminar rooms spread across campus, students and instructors frequently need to:
+    </p>
+    <ul class="about-list">
+      <li>Find an empty room for individual study, group discussions, or tutorial reviews.</li>
+      <li>Locate where a specific lecture or practical is currently being held.</li>
+      <li>Quickly check if a venue is free right now without wandering from building to building.</li>
+    </ul>
+  </div>
+
+  <div class="about-card">
+    <div class="about-h2">⚙️ How It Was Made & Data Engineering</div>
+    <p class="about-p">
+      Unlike simple calendar apps, DUCE teaching timetables are distributed across 4 distinct faculty PDF documents: <em>Science</em>, <em>Humanities</em>, <em>Education</em>, and <em>Postgraduate Studies</em>.
+    </p>
+    <ul class="about-list">
+      <li><strong>PDF Vector Decompression:</strong> Standard text extraction could not handle rotated day bands and spanning table cells. A custom parser decompresses internal PDF content streams (`zlib`), reads text matrices (`Tm`), and reconstructs geometric day/hour boundaries directly from vector divider lines.</li>
+      <li><strong>Precise Multi-Hour Durations:</strong> The duration of each lecture or practical is derived directly from underlying vector fill rectangles (`re dur = round(h / 449.0)`), capturing exact 1-hour, 2-hour, and 3-hour sessions.</li>
+      <li><strong>25 Canonical Venues & 912 Sessions:</strong> All venue designations across all faculties were normalized into 25 canonical venues, reconciling department naming differences (e.g. <em>COMP LAB - SC</em>, <em>BIOLOGY LAB II</em>, <em>DUCE LRA-LRE</em>).</li>
+      <li><strong>Offline Progressive Web App (PWA):</strong> Engineered with zero framework bloat using high-performance vanilla HTML5/CSS3/JavaScript. A Service Worker caches all assets and schedule data, ensuring the app works 100% offline without wasting mobile data.</li>
+    </ul>
+  </div>
+
+  <div class="about-card">
+    <div class="about-h2">💡 Features Guide</div>
+    <ul class="about-list">
+      <li><span class="about-tag">Live Status</span><strong>Occupied vs Free:</strong> Displays continuous session blocks, end times, and exact next scheduled classes without confusing jargon.</li>
+      <li><span class="about-tag">Search</span><strong>Course Lookup:</strong> Type any course code (e.g., <code>CS151</code>, <code>MT274</code>, <code>IS158</code>) to see venue and time immediately with live indicators (<em>Live Now</em>, <em>Today</em>, <em>All Week</em>).</li>
+      <li><span class="about-tag">Free Venues</span><strong>One-Tap Free Finder:</strong> Tap any free venue pill to instantly inspect its full daily schedule.</li>
+      <li><span class="about-tag">Compact UI</span><strong>Fast Pickers:</strong> Dropdowns scroll cleanly in place without covering the screen on mobile devices.</li>
+    </ul>
+  </div>
+
+  <div class="about-card">
+    <div class="about-h2">⚠️ Notice & Scope</div>
+    <p class="about-p">
+      The timetable data reflects the official DUCE Semester 1 teaching timetable (including the November 2026 revisions).
+    </p>
+    <p class="about-p">
+      <em>Please note:</em> Unscheduled room bookings, special university examinations, postponed sessions, or sudden tutor cancellations are organized ad-hoc by departments and cannot be automatically reflected.
+    </p>
+  </div>
+
+  <div class="about-card">
+    <div class="about-h2">👨‍💻 Project & Developer</div>
+    <p class="about-p">
+      Developed by <strong>Ramdan Sadal</strong> (<a href="https://github.com/ramdansadal" target="_blank" rel="noopener" style="color:var(--acc);font-weight:600">@ramdansadal</a>) for the DUCE community.
+    </p>
+    <p class="about-p" style="color:var(--mu);font-size:12.5px">
+      Built & deployed via Termux PRoot Linux on Android &bull; Hosted on GitHub Pages &bull; Version 2.0 (November 2026)
+    </p>
+    <button type="button" class="about-btn-back" id="btn-back-venues">
+      <span>&larr;</span> Back to Venues &amp; Timetable
+    </button>
+  </div>
 </div>
 
 <script>
@@ -178,6 +400,27 @@ function nextBusy(v,d,h){
     if(c[0]>h&&(best===null||c[0]<best))best=c[0];
   });
   return best;
+}
+
+/* Tab Switching (Venues / About) */
+var activeTab="venues";
+function switchTab(t){
+  activeTab=t;
+  if(t==="about"){
+    $("venues-view").style.display="none";
+    $("about-view").style.display="block";
+    $("tab-venues").classList.remove("active");
+    $("tab-about").classList.add("active");
+    if(window.location.hash!=="#about") window.location.hash="about";
+    window.scrollTo({top:0,behavior:"smooth"});
+  } else {
+    $("about-view").style.display="none";
+    $("venues-view").style.display="block";
+    $("tab-about").classList.remove("active");
+    $("tab-venues").classList.add("active");
+    if(window.location.hash==="#about") history.replaceState(null,null," ");
+    render();
+  }
 }
 
 /* Dropdown logic */
@@ -247,7 +490,6 @@ function runCourseSearch(){
     }
   }
 
-  // Sort: live first, then today, then day sequence, then start hour
   results.sort(function(a,b){
     if(a.isLive!==b.isLive) return a.isLive ? -1 : 1;
     if(a.isToday!==b.isToday) return a.isToday ? -1 : 1;
@@ -285,6 +527,17 @@ function runCourseSearch(){
 function init(){
   $("days").innerHTML=DAYS.map(function(d){return '<button data-d="'+d+'">'+d.slice(0,3)+'</button>'}).join("");
   $("days").onclick=function(ev){var d=ev.target.getAttribute("data-d");if(d){day=d;render()}};
+
+  // Tabs
+  $("tab-venues").onclick=function(){switchTab("venues")};
+  $("tab-about").onclick=function(){switchTab("about")};
+  $("btn-back-venues").onclick=function(){switchTab("venues")};
+
+  window.addEventListener("hashchange",function(){
+    if(window.location.hash==="#about") switchTab("about");
+    else switchTab("venues");
+  });
+  if(window.location.hash==="#about") switchTab("about");
 
   // Venue dropdown
   $("venue-btn").onclick=function(ev){
