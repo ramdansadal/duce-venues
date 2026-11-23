@@ -83,6 +83,7 @@ input, textarea {
 }
 
 /* TikTok-style Cover Hero */
+/* Nav Switcher - GPU Compositing & Repaint Hardened */
 .cover-hero{
   position:relative;
   width:100%;
@@ -95,34 +96,8 @@ input, textarea {
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
-}
-.cover-img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center 35%;
-  display:block;
-}
-.cover-gradient{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg, rgba(15,17,23,0.15) 0%, rgba(15,17,23,0.45) 45%, rgba(15,17,23,0.88) 100%);
-}
-.cover-body{
-  position:relative;
-  padding:14px;
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.cover-profile{
-  display:flex;
-  align-items:center;
-  gap:12px;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
 }
 .cover-avatar{
   width:56px;
@@ -132,14 +107,8 @@ input, textarea {
   box-shadow:0 4px 14px rgba(0,0,0,0.4);
   background:#2456d6;
   flex:none;
-}
-.cover-title{
-  font-size:20px;
-  font-weight:800;
-  letter-spacing:-0.3px;
-  color:#ffffff;
-  line-height:1.2;
-  text-shadow:0 2px 6px rgba(0,0,0,0.5);
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
 }
 .cover-tag{
   display:inline-block;
@@ -147,24 +116,23 @@ input, textarea {
   font-weight:600;
   padding:2px 8px;
   border-radius:99px;
-  background:rgba(255,255,255,0.22);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+  background:rgba(20,25,38,0.72);
   margin-top:4px;
   color:#f4f7ff;
   border:1px solid rgba(255,255,255,0.32);
 }
-
-/* Nav Switcher */
 .cover-nav{
   display:flex;
   gap:4px;
-  background:rgba(255,255,255,0.20);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  background:rgba(18,24,36,0.85);
   padding:4px;
   border-radius:12px;
-  border:1px solid rgba(255,255,255,0.28);
+  border:1px solid rgba(255,255,255,0.24);
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  contain:paint;
 }
 .nav-btn{
   font:inherit;
@@ -176,22 +144,37 @@ input, textarea {
   background:transparent;
   color:#ffffff;
   cursor:pointer;
-  transition:all .18s ease;
+  transition:background .15s ease,color .15s ease;
   white-space:nowrap;
   display:inline-flex;
   align-items:center;
   gap:6px;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
 }
-.nav-btn:active{opacity:0.85}
+.nav-btn .svg-ic{
+  display:inline-block;
+  vertical-align:-2px;
+  stroke:currentColor;
+  flex:none;
+  pointer-events:none;
+}
 .nav-btn.active{
-  background:#ffffff;
-  color:#11141a;
+  background:#ffffff !important;
+  color:#11141a !important;
   box-shadow:0 3px 10px rgba(0,0,0,0.25);
 }
+.nav-btn.active .svg-ic{
+  stroke:#11141a !important;
+}
+.nav-btn:not(.active) .svg-ic{
+  stroke:#ffffff !important;
+}
+.nav-btn:active{opacity:0.85}
 .install-btn{
-  background:rgba(255,255,255,0.28)!important;
+  background:rgba(255,255,255,0.22)!important;
   color:#ffffff!important;
-  border:1px solid rgba(255,255,255,0.4)!important;
+  border:1px solid rgba(255,255,255,0.35)!important;
 }
 
 /* Campus Off-Hours Banner */
@@ -508,7 +491,8 @@ input, textarea {
       </a>
     </div>
     <button type="button" class="about-btn-back" id="btn-back-venues">
-      <span>&larr;</span> Back to Venues &amp; Timetable
+      <svg class="svg-ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      <span>Back to Venues &amp; Timetable</span>
     </button>
   </div>
 </div>
@@ -598,7 +582,7 @@ function renderCampusBanner(){
   b.innerHTML=html;
 }
 
-/* Tab Switching (Venues / About) */
+/* Tab Switching (Venues / About) - Repaint & Scroll Hardened */
 var activeTab="venues";
 function switchTab(t){
   activeTab=t;
@@ -608,15 +592,20 @@ function switchTab(t){
     $("tab-venues").classList.remove("active");
     $("tab-about").classList.add("active");
     if(window.location.hash!=="#about") window.location.hash="about";
-    window.scrollTo({top:0,behavior:"smooth"});
+    window.scrollTo({top:0,behavior:"instant"});
   } else {
     $("about-view").style.display="none";
     $("venues-view").style.display="block";
     $("tab-about").classList.remove("active");
     $("tab-venues").classList.add("active");
     if(window.location.hash==="#about") history.replaceState(null,null," ");
+    window.scrollTo({top:0,behavior:"instant"});
     render();
   }
+  // Force synchronous reflow / repaint on nav items to prevent Blink GPU compositor drop
+  if($("tab-venues")) $("tab-venues").offsetHeight;
+  if($("tab-about")) $("tab-about").offsetHeight;
+  if($("venue-dd")) $("venue-dd").offsetHeight;
 }
 
 /* Custom PWA Installation Handler (beforeinstallprompt API) */
