@@ -217,6 +217,77 @@ body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-appl
 .pill{display:inline-block;margin:3px 4px 0 0;padding:5px 12px;border-radius:99px;background:var(--freebg);color:var(--free);font-size:12.5px;font-weight:600;border:1px solid var(--free-bd);cursor:pointer}
 .pill:active{opacity:.6}
 
+
+/* Install Promotion & Modal */
+.install-btn{background:rgba(255,255,255,0.28)!important;color:#ffffff!important;border:1px solid rgba(255,255,255,0.4)!important}
+.install-btn:active{opacity:0.85}
+
+.install-banner{
+  background:var(--card);
+  border:1px solid var(--acc-bd);
+  border-radius:14px;
+  padding:10px 12px;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 4px 14px rgba(36,86,214,0.08);
+  animation:fadeIn .25s ease-out;
+}
+.ib-icon{font-size:22px;flex:none}
+.ib-content{flex:1;min-width:0}
+.ib-title{font-size:13.5px;font-weight:750;color:var(--tx)}
+.ib-sub{font-size:12px;color:var(--mu);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib-btn{
+  background:var(--acc);
+  color:#ffffff;
+  border:none;
+  font:inherit;
+  font-size:12.5px;
+  font-weight:700;
+  padding:6px 14px;
+  border-radius:9px;
+  cursor:pointer;
+  flex:none;
+}
+.ib-btn:active{opacity:0.85}
+.ib-close{
+  background:none;
+  border:none;
+  color:var(--mu);
+  font-size:19px;
+  line-height:1;
+  cursor:pointer;
+  padding:4px 6px;
+  flex:none;
+}
+
+.modal-wrap{position:fixed;inset:0;z-index:999;display:flex;align-items:flex-end;justify-content:center}
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.modal-sheet{
+  position:relative;
+  width:100%;
+  max-width:520px;
+  background:var(--card);
+  border-top-left-radius:20px;
+  border-top-right-radius:20px;
+  padding:16px 18px 24px;
+  box-shadow:0 -8px 30px rgba(0,0,0,0.25);
+  animation:slideUp .22s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+.modal-handle{width:40px;height:4px;border-radius:99px;background:var(--bd);margin:0 auto 12px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.modal-title{font-size:16px;font-weight:800;color:var(--tx)}
+.modal-close{background:none;border:none;font-size:20px;color:var(--mu);cursor:pointer;padding:2px 6px}
+.modal-content{font-size:13.5px;line-height:1.55;color:var(--tx);margin-bottom:16px}
+.modal-step{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.modal-step-num{width:22px;height:22px;border-radius:99px;background:var(--acc-bg);color:var(--acc);font-size:12px;font-weight:750;display:flex;align-items:center;justify-content:center;flex:none}
+.modal-ok-btn{width:100%;font:inherit;font-size:14px;font-weight:700;padding:12px;border-radius:12px;border:none;background:var(--acc);color:#ffffff;cursor:pointer}
+.modal-ok-btn:active{opacity:0.85}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
 /* About Page Styling */
 .about-card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
 .about-h2{font-size:16px;font-weight:750;margin:0 0 8px;display:flex;align-items:center;gap:8px;color:var(--tx)}
@@ -247,6 +318,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-appl
     <div class="cover-nav">
       <button type="button" class="nav-btn active" id="tab-venues">🏛️ Venues</button>
       <button type="button" class="nav-btn" id="tab-about">ℹ️ About</button>
+      <button type="button" class="nav-btn install-btn" id="btn-install-header" style="display:none">📲 Install</button>
     </div>
   </div>
 </div>
@@ -257,6 +329,17 @@ body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-appl
 
 <!-- ==================== VENUES VIEW ==================== -->
 <div id="venues-view">
+  <!-- In-App Install Banner (shown if not installed) -->
+  <div id="install-banner" class="install-banner" style="display:none">
+    <div class="ib-icon">📲</div>
+    <div class="ib-content">
+      <div class="ib-title">Install DUCE Venues</div>
+      <div class="ib-sub">Add to home screen for instant offline access</div>
+    </div>
+    <button type="button" class="ib-btn" id="btn-banner-install">Install</button>
+    <button type="button" class="ib-close" id="btn-banner-close" title="Dismiss">&times;</button>
+  </div>
+
   <!-- Course Search Section -->
   <div class="search-wrap">
     <div class="search-box">
@@ -517,7 +600,7 @@ function runCourseSearch(){
 
     html+='<div class="search-card" data-v="'+r.venue+'" data-d="'+r.day+'" data-h="'+r.start+'">';
     html+='  <div class="sc-top"><span class="sc-course">'+r.course+'</span><span class="sc-badge '+badgeClass+'">'+badgeText+'</span></div>';
-    html+='  <div class="sc-details"><span>📍 '+r.venue+'</span><span>⏱ '+r.day+', '+f(r.start)+'&ndash;'+f(r.end)+' ('+r.type+')</span></div>';
+    html+='  <div class="sc-details"><span>📌 '+r.venue+'</span><span>⏱ '+r.day+', '+f(r.start)+'&ndash;'+f(r.end)+' ('+r.type+')</span></div>';
     html+='</div>';
   });
 
@@ -615,6 +698,19 @@ function init(){
     }
   };
 
+  
+  // Install buttons
+  if ($("btn-install-header")) $("btn-install-header").onclick = triggerInstallFlow;
+  if ($("btn-banner-install")) $("btn-banner-install").onclick = triggerInstallFlow;
+  if ($("btn-banner-close")) $("btn-banner-close").onclick = function() {
+    $("install-banner").style.display = "none";
+    localStorage.setItem("duce_install_dismissed", "true");
+  };
+  if ($("btn-modal-close")) $("btn-modal-close").onclick = closeInstallModal;
+  if ($("btn-modal-ok")) $("btn-modal-ok").onclick = closeInstallModal;
+  if ($("modal-overlay")) $("modal-overlay").onclick = closeInstallModal;
+  updateInstallUI();
+
   $("freelist").onclick=function(ev){
     var v=ev.target.getAttribute("data-v");
     if(v){
@@ -700,6 +796,71 @@ function render(){
   $("freelist").innerHTML=fl.map(function(v){return '<button class="pill" data-v="'+v+'">'+v+'</button>'}).join("");
 }
 
+
+/* PWA Installation Handler */
+var deferredInstallPrompt = null;
+var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+var isDismissed = localStorage.getItem("duce_install_dismissed") === "true";
+
+function updateInstallUI() {
+  if (isStandalone) {
+    if ($("btn-install-header")) $("btn-install-header").style.display = "none";
+    if ($("install-banner")) $("install-banner").style.display = "none";
+    return;
+  }
+  // If not standalone and not dismissed, show promotion
+  if ($("btn-install-header")) $("btn-install-header").style.display = "inline-block";
+  if ($("install-banner") && !isDismissed) $("install-banner").style.display = "flex";
+}
+
+window.addEventListener("beforeinstallprompt", function(e) {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  updateInstallUI();
+});
+
+window.addEventListener("appinstalled", function() {
+  deferredInstallPrompt = null;
+  isStandalone = true;
+  updateInstallUI();
+});
+
+function triggerInstallFlow() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(function(choice) {
+      if (choice.outcome === "accepted") {
+        isStandalone = true;
+        updateInstallUI();
+      }
+      deferredInstallPrompt = null;
+    });
+  } else {
+    // Show instruction modal (iOS or already prompted)
+    showInstallModal();
+  }
+}
+
+function showInstallModal() {
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  var html = "";
+  if (isIOS) {
+    html = '<div class="modal-step"><div class="modal-step-num">1</div><div>Tap the <strong>Share</strong> button (⎋) in Safari\'s bottom toolbar.</div></div>' +
+           '<div class="modal-step"><div class="modal-step-num">2</div><div>Scroll down and select <strong>"Add to Home Screen"</strong> (➕).</div></div>' +
+           '<div class="modal-step"><div class="modal-step-num">3</div><div>Tap <strong>"Add"</strong> at the top right to install.</div></div>';
+  } else {
+    html = '<div class="modal-step"><div class="modal-step-num">1</div><div>Tap the browser menu <strong>(⋮)</strong> in Chrome or your browser.</div></div>' +
+           '<div class="modal-step"><div class="modal-step-num">2</div><div>Select <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.</div></div>' +
+           '<div class="modal-step"><div class="modal-step-num">3</div><div>Confirm to install DUCE Venues directly on your device.</div></div>';
+  }
+  $("modal-content").innerHTML = html;
+  $("install-modal").style.display = "flex";
+}
+
+function closeInstallModal() {
+  $("install-modal").style.display = "none";
+}
+
 init();
 
 document.addEventListener("visibilitychange",function(){
@@ -714,4 +875,18 @@ if("serviceWorker" in navigator){
     navigator.serviceWorker.register("sw.js").catch(function(){});
   });
 }
-</script></body></html>
+</script>
+<!-- Install Guide Modal for iOS / Fallback -->
+<div id="install-modal" class="modal-wrap" style="display:none">
+  <div class="modal-overlay" id="modal-overlay"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">📲 Install App</div>
+      <button type="button" class="modal-close" id="btn-modal-close">&times;</button>
+    </div>
+    <div class="modal-content" id="modal-content"></div>
+    <button type="button" class="modal-ok-btn" id="btn-modal-ok">Got it</button>
+  </div>
+</div>
+</body></html>

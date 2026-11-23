@@ -1,1 +1,27 @@
-{"name":"DUCE Venue Status","short_name":"DUCE Venues","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#2456d6","theme_color":"#2456d6","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]}
+{
+  "name": "DUCE Venue Status",
+  "short_name": "DUCE Venues",
+  "description": "Real-time timetable, room occupancy, and course lookup assistant for Dar es Salaam University College of Education (DUCE).",
+  "id": "/duce-venues/",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1B202E",
+  "theme_color": "#1B202E",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
