@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --bg:#f4f5f8;--card:#ffffff;--tx:#171a1f;--mu:#646d7a;--bd:#d7dde6;--bd-light:#eef2f6;
+  --bg:#f4f5f8;--bg-rgb:244,245,248;--card:#ffffff;--tx:#171a1f;--mu:#646d7a;--bd:#d7dde6;--bd-light:#eef2f6;
   --free:#118347;--freebg:#e5f7ed;--free-bd:#aee8c8;
   --busy:#c42e24;--busybg:#fdeeed;--busy-bd:#f6bebb;
   --acc:#2456d6;--acc-bg:#ecf2ff;--acc-bd:#b7ccff;
@@ -18,7 +18,7 @@
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0f1115;--card:#181b20;--tx:#eaedf1;--mu:#949fad;--bd:#272d36;--bd-light:#1f232b;
+    --bg:#0f1115;--bg-rgb:15,17,21;--card:#181b20;--tx:#eaedf1;--mu:#949fad;--bd:#272d36;--bd-light:#1f232b;
     --free:#44d487;--freebg:#122c1f;--free-bd:#1b4c34;
     --busy:#ff7a6d;--busybg:#341a17;--busy-bd:#572620;
     --acc:#7aa5ff;--acc-bg:#162447;--acc-bd:#294680;
@@ -27,7 +27,7 @@
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f1115;--card:#181b20;--tx:#eaedf1;--mu:#949fad;--bd:#272d36;--bd-light:#1f232b;
+  --bg:#0f1115;--bg-rgb:15,17,21;--card:#181b20;--tx:#eaedf1;--mu:#949fad;--bd:#272d36;--bd-light:#1f232b;
   --free:#44d487;--freebg:#122c1f;--free-bd:#1b4c34;
   --busy:#ff7a6d;--busybg:#341a17;--busy-bd:#572620;
   --acc:#7aa5ff;--acc-bg:#162447;--acc-bd:#294680;
@@ -47,7 +47,8 @@ html, body {
   scroll-padding-top:env(safe-area-inset-top,0px);
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:12px;max-width:680px;margin-left:auto;margin-right:auto}
+html{background:var(--bg)}
+body{margin:0;padding:0;background:transparent;color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
 
 /* Enable text selection strictly in inputs */
 input, textarea {
@@ -71,33 +72,57 @@ input, textarea {
   color:var(--acc);
 }
 
-/* Ambient Background Cover */
-.bg-ambience{
+/* Static TikTok-style Cover Background (Full Screen X-Axis, Fixed) */
+.static-cover-bg{
   position:fixed;
-  top:0;left:0;right:0;height:320px;
-  background:url('cover.jpg') center top / cover no-repeat;
-  opacity:0.10;
-  filter:blur(45px);
+  top:0;
+  left:0;
+  right:0;
+  width:100%;
+  height:210px;
+  z-index:0;
   pointer-events:none;
-  z-index:-1;
+  overflow:hidden;
+  background:#1B202E;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+}
+.static-cover-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 30%;
+  display:block;
+}
+.static-cover-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(15,17,23,0.12) 0%, rgba(15,17,23,0.40) 50%, rgba(15,17,23,0.85) 100%);
 }
 
-/* TikTok-style Cover Hero */
-/* Nav Switcher - GPU Compositing & Repaint Hardened */
-.cover-hero{
+/* App Header Section (Over the Cover) */
+.cover-hero-header{
   position:relative;
-  width:100%;
-  min-height:170px;
-  border-radius:20px;
-  overflow:hidden;
-  margin-bottom:10px;
-  box-shadow:var(--shadow);
-  background:#1B202E;
+  z-index:1;
+  max-width:680px;
+  margin:0 auto;
+  min-height:175px;
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
-  transform:translateZ(0);
-  -webkit-transform:translateZ(0);
+  padding:14px 14px 8px 14px;
+}
+.cover-body{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.cover-profile{
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 .cover-avatar{
   width:56px;
@@ -109,6 +134,13 @@ input, textarea {
   flex:none;
   transform:translateZ(0);
   -webkit-transform:translateZ(0);
+}
+.cover-title{
+  font-size:18px;
+  font-weight:800;
+  color:#ffffff;
+  letter-spacing:-0.2px;
+  text-shadow:0 2px 8px rgba(0,0,0,0.5);
 }
 .cover-tag{
   display:inline-block;
@@ -124,7 +156,7 @@ input, textarea {
 .cover-nav{
   display:flex;
   gap:4px;
-  background:rgba(18,24,36,0.85);
+  background:rgba(18,24,36,0.88);
   padding:4px;
   border-radius:12px;
   border:1px solid rgba(255,255,255,0.24);
@@ -175,6 +207,22 @@ input, textarea {
   background:rgba(255,255,255,0.22)!important;
   color:#ffffff!important;
   border:1px solid rgba(255,255,255,0.35)!important;
+}
+
+/* Sliding Page Sheet (Slides Above Static Background with Top-Down Transparent Gradient) */
+.page-sheet{
+  position:relative;
+  z-index:2;
+  max-width:680px;
+  margin:0 auto;
+  min-height:calc(100vh - 175px);
+  background:linear-gradient(180deg, 
+    rgba(var(--bg-rgb), 0) 0px, 
+    rgba(var(--bg-rgb), 0.55) 24px, 
+    var(--bg) 55px, 
+    var(--bg) 100%
+  );
+  padding:12px 12px 30px 12px;
 }
 
 /* Campus Off-Hours Banner */
@@ -349,12 +397,14 @@ input, textarea {
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 </style></head><body>
 
-<div class="bg-ambience"></div>
+<!-- Static TikTok-style Cover Background (Full Screen X-Axis, Fixed) -->
+<div class="static-cover-bg" aria-hidden="true">
+  <img class="static-cover-img" src="cover.jpg" alt="">
+  <div class="static-cover-overlay"></div>
+</div>
 
-<!-- Cover Hero (TikTok-style) -->
-<div class="cover-hero">
-  <img class="cover-img" src="cover.jpg" alt="DUCE Cover">
-  <div class="cover-gradient"></div>
+<!-- App Header Section (Over the Cover) -->
+<header class="cover-hero-header">
   <div class="cover-body">
     <div class="cover-profile">
       <img src="icon-192.png" class="cover-avatar" alt="App Icon">
@@ -369,8 +419,9 @@ input, textarea {
       <button type="button" class="nav-btn install-btn" id="btn-install-header" style="display:none"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/><path d="m9 11 3 3 3-3M12 6v8"/></svg> <span>Install</span></button>
     </div>
   </div>
-</div>
+</header>
 
+<main class="page-sheet">
 <!-- Campus Status & Off-Hours Notice Bar -->
 <div id="campus-status-banner" class="campus-status-banner"></div>
 
@@ -496,6 +547,7 @@ input, textarea {
     </button>
   </div>
 </div>
+</main>
 
 <!-- Install Guide Modal for iOS / Fallback -->
 <div id="install-modal" class="modal-wrap" style="display:none">
@@ -745,7 +797,10 @@ function runCourseSearch(){
   });
 
   if(!results.length){
-    $("search-results").innerHTML='<div class="search-empty">No course sessions found for "'+q+'"</div>';
+    var empty=document.createElement("div");
+    empty.className="search-empty";
+    empty.textContent='No course sessions found for "'+q+'"';
+    $("search-results").replaceChildren(empty);
     return;
   }
 
