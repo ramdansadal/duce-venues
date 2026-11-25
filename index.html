@@ -663,7 +663,7 @@ function switchTab(t){
 /* Custom PWA Installation Handler (beforeinstallprompt API) */
 var deferredInstallPrompt = null;
 var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-var isDismissed = localStorage.getItem("duce_install_dismissed") === "true";
+var isDismissed=false;try{isDismissed=localStorage.getItem("duce_install_dismissed")==="true"}catch(e){}
 
 function updateInstallUI() {
   if (isStandalone) {
@@ -921,7 +921,7 @@ function init(){
   if ($("btn-banner-install")) $("btn-banner-install").onclick = triggerInstallFlow;
   if ($("btn-banner-close")) $("btn-banner-close").onclick = function() {
     $("install-banner").style.display = "none";
-    localStorage.setItem("duce_install_dismissed", "true");
+    try{localStorage.setItem("duce_install_dismissed","true")}catch(e){}
   };
   if ($("btn-modal-close")) $("btn-modal-close").onclick = closeInstallModal;
   if ($("btn-modal-ok")) $("btn-modal-ok").onclick = closeInstallModal;
